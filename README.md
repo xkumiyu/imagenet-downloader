@@ -27,7 +27,7 @@ $ python gen_urls.py
 $ cat <generated urllist> | xargs -n 2 ./download.sh
 ```
 
-* It takes several hours to download about 1.2 million images, and their size is about 100 GB.
+  * It takes several hours to download about 1.3 million images, and their size is about 100 GB.
 
 3. Resize Image and Generate Image List
 

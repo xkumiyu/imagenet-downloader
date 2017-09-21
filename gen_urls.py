@@ -62,10 +62,11 @@ def main():
 
             row = {
                 'name': os.path.join(args.root, fileid + '.jpg'),
-                'url': '{}'.format(fileurl)}
+                'url': '"{}"'.format(fileurl)}
             urls.append(row)
 
-    pd.DataFrame(urls).to_csv(args.urllist, index=False, header=False, sep=' ')
+    pd.DataFrame(urls).to_csv(
+        args.urllist, index=False, columns=['name', 'url'], header=False, sep=' ')
 
 
 if __name__ == '__main__':

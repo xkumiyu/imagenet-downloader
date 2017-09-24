@@ -41,7 +41,7 @@ def main():
     parser = argparse.ArgumentParser(description='Generate URL list')
     parser.add_argument('--urls', '-i', default='list/fall11_urls.txt')
     parser.add_argument('--words', '-w', default='list/words.txt')
-    parser.add_argument('--categories', '-c', default='list/ILSVRC2011.txt')
+    parser.add_argument('--categories', '-c', default='list/ILSVRC2012.txt')
     parser.add_argument('--root', '-r', default='image/original/')
     parser.add_argument('--urllist', default='list/urllist.txt')
     parser.add_argument('--clist', default='list/clist.csv')

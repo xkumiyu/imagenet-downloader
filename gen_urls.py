@@ -1,14 +1,12 @@
-import os
 import argparse
 import codecs
+import pathlib
 
 import pandas as pd
+from tqdm import tqdm
 
 
 def get_categories(all_list_file, category_list_file):
-    """
-    return: pandas DataFrame
-    """
     all_list = pd.read_csv(all_list_file, header=None, delimiter='\t')
     all_list.columns = ['id', 'name']
 
@@ -26,34 +24,54 @@ def get_categories(all_list_file, category_list_file):
     return pd.merge(categories, label, on='name')
 
 
-def process_line(line, urls, c_ids):
-    fileid, fileurl, *tmp = line.strip().split('\t')
-    c_id, _ = fileid.split('_')
-
-    if c_id not in c_ids.keys():
-        return urls
-
-    urls.append(fileurl)
-    return urls
-
-
 def main():
     parser = argparse.ArgumentParser(description='Generate URL list')
-    parser.add_argument('--urls', '-i', default='list/fall11_urls.txt')
-    parser.add_argument('--words', '-w', default='list/words.txt')
-    parser.add_argument('--categories', '-c', default='list/ILSVRC2012.txt')
-    parser.add_argument('--root', '-r', default='image/original/')
-    parser.add_argument('--urllist', default='list/urllist.txt')
-    parser.add_argument('--clist', default='list/clist.csv')
+    parser.add_argument(
+        '--urls_file',
+        default='list/fall11_urls.txt',
+        type=pathlib.Path,
+        help='input file path')
+    parser.add_argument(
+        '--words_file', default='list/words.txt', type=pathlib.Path)
+    parser.add_argument(
+        '--categories_file',
+        default='list/ILSVRC2012_ClassList.txt',
+        type=pathlib.Path)
+    parser.add_argument('--image_dir', default='images/', type=pathlib.Path)
+    parser.add_argument(
+        '--urllist_file', default='list/urllist.txt', type=pathlib.Path)
+    parser.add_argument(
+        '--clist_file', default='list/clist.csv', type=pathlib.Path)
+    parser.add_argument(
+        '--urls_file_line', type=int, help='for fall11_urls.txt, 14197122')
     args = parser.parse_args()
 
-    df = get_categories(args.words, args.categories)
-    df.to_csv(args.clist, index=False)
+    # check files
+    if not args.urls_file.exists():
+        raise FileNotFoundError(args.urls_file)
+    if not args.words_file.exists():
+        raise FileNotFoundError(args.words_file)
+    if not args.categories_file.exists():
+        raise FileNotFoundError(args.categories_file)
+    if args.urllist_file.exists():
+        raise FileExistsError(args.urllist_file)
+    if args.clist_file.exists():
+        raise FileExistsError(args.clist_file)
+
+    # create dir
+    args.image_dir.mkdir(parents=True, exist_ok=True)
+
+    # get categories
+    df = get_categories(args.words_file, args.categories_file)
     c_ids = list(df['id'])
 
+    # get urls
+    pbar = tqdm(total=args.urls_file_line)
     urls = []
-    with codecs.open(args.urls, 'r', 'utf-8', 'ignore') as f:
+    with codecs.open(args.urls_file, 'r', 'utf-8', 'ignore') as f:
         for line in f:
+            pbar.update(1)
+
             fileid, fileurl, *tmp = line.strip().split('\t')
             c_id, _ = fileid.split('_')
 
@@ -61,12 +79,22 @@ def main():
                 continue
 
             row = {
-                'name': os.path.join(args.root, fileid + '.jpg'),
-                'url': '"{}"'.format(fileurl)}
+                'name': args.image_dir / (fileid + '.jpg'),
+                'url': '"{}"'.format(fileurl)
+            }
             urls.append(row)
+    pbar.close()
 
+    # output categories
+    df.to_csv(args.clist_file, index=False)
+
+    # output urls
     pd.DataFrame(urls).to_csv(
-        args.urllist, index=False, columns=['name', 'url'], header=False, sep=' ')
+        args.urllist_file,
+        index=False,
+        columns=['name', 'url'],
+        header=False,
+        sep=' ')
 
 
 if __name__ == '__main__':

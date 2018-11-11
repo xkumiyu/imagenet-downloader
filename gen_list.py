@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 def main():
     parser = argparse.ArgumentParser(description='Generate file list')
-    parser.add_argument('--input', '-i', default='image/')
+    parser.add_argument('--input', '-i', default='images/')
     parser.add_argument('--output', '-o', default='filelist.txt')
     parser.add_argument('--clist', default='list/clist.csv')
     args = parser.parse_args()

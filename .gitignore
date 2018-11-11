@@ -134,3 +134,4 @@ ENV/
 
 images/
 list/
+.vscode/

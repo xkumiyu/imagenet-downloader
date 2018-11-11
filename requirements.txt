@@ -1,13 +1,13 @@
 -i https://pypi.org/simple
-certifi==2018.4.16
+certifi==2018.10.15
 chardet==3.0.4
 idna==2.7
-numpy==1.15.0; python_version != '3.2.*'
-pandas==0.23.3
-pillow==5.2.0; python_version != '3.2.*'
-python-dateutil==2.7.3
-pytz==2018.5
-requests==2.19.1
+numpy==1.15.4
+pandas==0.23.4
+pillow==5.3.0
+python-dateutil==2.7.5
+pytz==2018.7
+requests==2.20.1
 six==1.11.0
-tqdm==4.24.0
-urllib3==1.23
+tqdm==4.28.1
+urllib3==1.24.1

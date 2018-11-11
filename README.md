@@ -33,7 +33,7 @@ $ cat <generated urllist> | xargs -n 2 ./download.sh
 ```
 
 * It takes several hours to download about 1.3 million images, and their size is about 100 GB.
-* We recommend running it in the backend, ex. `$ nohup cat list/urllist.txt | xargs -n 2 ./download.sh > download.log &`
+* We recommend running it in the backend, ex. `$ nohup cat list/urllist.txt | xargs -n 2 ./download.sh > download.log 2> error.log &`
 
 3. (optionally) Generate Image File List
 
